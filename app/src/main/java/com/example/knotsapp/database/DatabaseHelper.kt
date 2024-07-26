@@ -17,7 +17,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val DATABASE_VERSION:Int = 10
     }
 
-    var Knots:List<Knot> = convertXMLToObject( context.resources.getXml( R.xml.knots) ).convert()
+    var Knots:List<Knot> =  convertXMLToObject( context.resources.getXml( R.xml.knots) ).convert()
 
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -58,7 +58,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun getAllKnots(): List<Knot> {
 
-        val cursor:Cursor = this.readableDatabase.rawQuery("SELECT * FROM Knot",null)
+        val cursor:Cursor = this.readableDatabase.rawQuery("SELECT * FROM Knot;",null)
 
         val list = mutableListOf<Knot>()
 
@@ -89,7 +89,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
 
         db.update("Knot",contentValues,"name = ?", arrayOf(name))
-
 
     }
 }

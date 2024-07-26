@@ -8,7 +8,7 @@ import com.example.knotsapp.R
 
 class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: TextView, val textKnotNameOrWarning: TextView) {
 
-    var NowKnot:Knot = list.random()
+    var NowKnot:Knot = getRandomKnot()
     val refereeAudio = MediaPlayer.create(context, R.raw.referee)
     lateinit var knotNameAudio:MediaPlayer
     lateinit var countDownTimerUntieTime:CountDownTimer
@@ -24,7 +24,8 @@ class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: 
             }
 
             override fun onFinish() {
-                NowKnot = list.random()
+                NowKnot = getRandomKnot()
+
                 prepareTime()
             }
 
@@ -67,6 +68,18 @@ class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: 
         }.start()
     }
 
+
+    fun getRandomKnot():Knot{
+
+        val selectKnot:List<Knot> = list.filter {
+                item -> item.activated == true
+        }
+
+        if(selectKnot.size <= 0)
+            return  list.get(0)
+
+        return selectKnot.random()
+    }
     private fun playReferee(){
         if(!refereeAudio.isPlaying())
             refereeAudio.start()
@@ -100,6 +113,10 @@ class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: 
         if (::countDownTimerPrepareTime.isInitialized)
             countDownTimerPrepareTime.cancel()
 
+    }
+
+    fun updateList(position:Int , activated:Boolean){
+        list.get(position).activated = activated
     }
 
 

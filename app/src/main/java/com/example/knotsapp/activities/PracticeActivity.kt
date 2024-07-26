@@ -63,10 +63,13 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
     }
 
     override fun switchKnot(context: Context , name:String , activited:Boolean) {
-        Toast.makeText( context,"Okay",Toast.LENGTH_LONG).show()
         ControllerKnot(context).switchKnot(name, activited )
 
-
     }
+
+    override fun updateList(position: Int, activied: Boolean) {
+        runPractice.updateList(position,activied)
+    }
+
 
 }
