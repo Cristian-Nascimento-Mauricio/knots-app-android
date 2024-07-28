@@ -21,6 +21,7 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
     val dialog = CustomDialogCofigKnotList()
     lateinit var runPractice:RunPractice
     lateinit var list:ArrayList<Knot>
+    val historyList:MutableList<Knot> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,8 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
 
     }
 
+
+
     override fun onBackPressed() {
         super.onBackPressed()
         runPractice.clearAudio()
@@ -68,7 +71,12 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
     }
 
     override fun updateList(position: Int, activied: Boolean) {
-        runPractice.updateList(position,activied)
+        if(::runPractice.isInitialized)
+            runPractice.updateList(position,activied)
+    }
+
+    override fun addHistoryList(knot: Knot) {
+        historyList.add(knot)
     }
 
 
