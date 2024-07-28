@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -21,6 +21,8 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
     val dialog = CustomDialogCofigKnotList()
     lateinit var runPractice:RunPractice
     lateinit var list:ArrayList<Knot>
+    val historyList:MutableList<Knot> = mutableListOf()
+    var isPaused:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,29 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
 
     }
 
+    fun btnPrevious(view: View){
+
+    }
+
+    fun btnPaused(view: View){
+
+        if(isPaused)
+            view.findViewById<ImageButton>(R.id.btnPaused).setImageResource(R.drawable.img_play)
+        else
+            view.findViewById<ImageButton>(R.id.btnPaused).setImageResource(R.drawable.img_pause)
+
+        isPaused = !isPaused
+        /*
+        if(::runPractice.isInitialized)
+            runPractice.pauseTime(isPaused)
+
+         */
+    }
+
+    fun btnNext(view: View){
+
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         runPractice.clearAudio()
@@ -68,7 +93,12 @@ class PracticeActivity : AppCompatActivity() , AddSwitchKnotMethods {
     }
 
     override fun updateList(position: Int, activied: Boolean) {
-        runPractice.updateList(position,activied)
+        if(::runPractice.isInitialized)
+            runPractice.updateList(position,activied)
+    }
+
+    override fun addHistoryList(knot: Knot) {
+        historyList.add(knot)
     }
 
 

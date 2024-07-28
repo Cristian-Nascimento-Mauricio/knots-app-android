@@ -3,41 +3,47 @@ package com.example.knotsapp.util
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.TextView
 import com.example.knotsapp.R
+import com.example.knotsapp.activities.PracticeActivity
 
 class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: TextView, val textKnotNameOrWarning: TextView) {
 
     var NowKnot:Knot = getRandomKnot()
     val refereeAudio = MediaPlayer.create(context, R.raw.referee)
     lateinit var knotNameAudio:MediaPlayer
-    lateinit var countDownTimerUntieTime:CountDownTimer
-    lateinit var countDownTimerPrepareTime:CountDownTimer
-    lateinit var countDownTimerDoKnotTime:CountDownTimer
-
+    lateinit var countDownTimerUntieTime:CountDownTimerModified
+    lateinit var countDownTimerPrepareTime:CountDownTimerModified
+    lateinit var countDownTimerDoKnotTime:CountDownTimerModified
 
     fun untieTime( ){
-        countDownTimerUntieTime = object : CountDownTimer(15_000, 1_000){
+
+
+        countDownTimerUntieTime = object : CountDownTimerModified(15_000, 1_000){
             override fun onTick(p0: Long) {
                 textTime.text = "" + p0.toInt() / 1000
                 textKnotNameOrWarning.text = "Desfaça o nó"
             }
 
             override fun onFinish() {
-                NowKnot = getRandomKnot()
+                super.onFinish()
 
+                NowKnot = getRandomKnot()
                 prepareTime()
+
             }
 
-        }.start()
+        }.startTime()
 
     }
 
     fun prepareTime(time: Long = 5_000){
 
         playNameKnot(NowKnot.name.toString())
+        PracticeActivity().addHistoryList(NowKnot)
 
-        countDownTimerPrepareTime = object : CountDownTimer(time,1_000){
+        countDownTimerPrepareTime = object : CountDownTimerModified(time,1_000){
             override fun onTick(p0: Long) {
                 textTime.text = "" + p0.toInt() / 1000
                 textKnotNameOrWarning.text = NowKnot.name.toString()
@@ -45,29 +51,50 @@ class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: 
             }
 
             override fun onFinish() {
+                super.onFinish()
+
                 playReferee()
                 NowKnot.time?.let { doKnotTime(it.toLong()) }
             }
 
-        }.start()
+        }.startTime()
 
     }
 
     fun doKnotTime(time:Long){
-        countDownTimerDoKnotTime = object : CountDownTimer(time * 1_000, 1_000){
+        countDownTimerDoKnotTime = object : CountDownTimerModified(time * 1_000, 1_000){
             override fun onTick(p0: Long) {
                 textTime.text = ""
 
             }
 
             override fun onFinish() {
+                super.onFinish()
+
                 playReferee()
                 untieTime()
             }
 
-        }.start()
+        }.startTime()
     }
 
+    fun pauseTime(isPaused:Boolean){
+        if(::countDownTimerUntieTime.isInitialized) {
+
+
+        }
+        if(::countDownTimerPrepareTime.isInitialized) {
+            Log.i("test", "prepare: ${countDownTimerPrepareTime.isRunning}")
+
+        }
+        if(::countDownTimerDoKnotTime.isInitialized){
+            Log.i("test", "do knot: ${countDownTimerDoKnotTime.isRunning}")
+
+        }
+        fun function(){
+
+        }
+    }
 
     fun getRandomKnot():Knot{
 
@@ -80,6 +107,7 @@ class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: 
 
         return selectKnot.random()
     }
+
     private fun playReferee(){
         if(!refereeAudio.isPlaying())
             refereeAudio.start()
@@ -118,6 +146,5 @@ class RunPractice(val context: Context, val list:ArrayList<Knot>, val textTime: 
     fun updateList(position:Int , activated:Boolean){
         list.get(position).activated = activated
     }
-
 
 }
